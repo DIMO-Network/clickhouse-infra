@@ -46,6 +46,11 @@ type Container struct {
 	settings config.Settings
 }
 
+// Config returns the settings of the container.
+func (c *Container) Config() config.Settings {
+	return c.settings
+}
+
 // CreateClickHouseContainer function starts and testcontainer for clickhouse.
 // The caller is responsible for terminating the container.
 func CreateClickHouseContainer(ctx context.Context, settings config.Settings) (*Container, error) {
