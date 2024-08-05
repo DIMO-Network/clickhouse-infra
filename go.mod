@@ -3,14 +3,14 @@ module github.com/DIMO-Network/clickhouse-infra
 go 1.22.0
 
 require (
-	github.com/ClickHouse/clickhouse-go/v2 v2.26.0
+	github.com/ClickHouse/clickhouse-go/v2 v2.27.0
 	github.com/docker/go-connections v0.5.0
 	github.com/mdelapenya/tlscert v0.1.0
 	github.com/pressly/goose/v3 v3.21.1
 	github.com/testcontainers/testcontainers-go v0.32.0
 	github.com/testcontainers/testcontainers-go/modules/clickhouse v0.32.0
 	golang.org/x/text v0.16.0
-	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d
+	golang.org/x/tools v0.23.0
 )
 
 require (
@@ -67,10 +67,10 @@ require (
 	go.opentelemetry.io/otel/metric v1.26.0 // indirect
 	go.opentelemetry.io/otel/trace v1.26.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/crypto v0.25.0 // indirect
+	golang.org/x/mod v0.19.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17 // indirect
 	google.golang.org/grpc v1.59.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
