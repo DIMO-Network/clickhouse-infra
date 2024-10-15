@@ -6,8 +6,10 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"os"
 	"sync"
 
+	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/pressly/goose/v3"
 )
 
@@ -48,6 +50,32 @@ func RunGoose(ctx context.Context, gooseArgs []string, registerFuncs []func(), d
 	err := goose.RunContext(ctx, cmd, db, ".", args...)
 	if err != nil {
 		return fmt.Errorf("failed to run goose command: %w", err)
+	}
+	return nil
+}
+
+// RunGooseCmd parses cmdline arguments and runs the goose command using the provided registerFuncs.
+func RunGooseCmd(ctx context.Context, registerFuncs []func()) error {
+	args := os.Args
+
+	if len(args) < 2 {
+		return fmt.Errorf("usage: %s <dbstring> <command> [args]", args[0])
+	}
+
+	dbstring := args[1]
+	dbOptions, err := clickhouse.ParseDSN(dbstring)
+	if err != nil {
+		return fmt.Errorf("failed to parse DSN: %w", err)
+	}
+	sqlDB := clickhouse.OpenDB(dbOptions)
+
+	err = RunGoose(ctx, args[2:], registerFuncs, sqlDB)
+	if err != nil {
+		_ = sqlDB.Close()
+		return fmt.Errorf("failed to run goose command: %w", err)
+	}
+	if err := sqlDB.Close(); err != nil {
+		return fmt.Errorf("failed to close db: %w", err)
 	}
 	return nil
 }
