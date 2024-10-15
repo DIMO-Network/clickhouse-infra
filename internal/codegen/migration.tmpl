@@ -11,7 +11,6 @@ func init() {
 	_, filename, _, _ := runtime.Caller(0)
 	registerFunc := func() { goose.AddNamedMigrationContext(filename, up{{ .FuncName }}, down{{ .FuncName }}) }
 	registerFuncs = append(registerFuncs, registerFunc)
-	registerFunc()
 }
 
 func up{{ .FuncName }}(ctx context.Context, tx *sql.Tx) error {
