@@ -1,13 +1,11 @@
 module github.com/DIMO-Network/clickhouse-infra
 
-go 1.23.0
-
-toolchain go1.24.4
+go 1.24
 
 require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.37.1
 	github.com/docker/go-connections v0.5.0
-	github.com/mdelapenya/tlscert v0.1.0
+	github.com/mdelapenya/tlscert v0.2.0
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/testcontainers/testcontainers-go v0.37.0
 	github.com/testcontainers/testcontainers-go/modules/clickhouse v0.37.0
