@@ -64,7 +64,7 @@ func CreateClickHouseContainer(ctx context.Context, settings config.Settings) (*
 	if err != nil {
 		return nil, fmt.Errorf("failed to create certs: %w", err)
 	}
-	clickHouseContainer, err := chmodule.Run(ctx, "clickhouse/clickhouse-server:latest",
+	clickHouseContainer, err := chmodule.Run(ctx, "clickhouse/clickhouse-server:25.5.3-alpine",
 		chmodule.WithDatabase(settings.Database),
 		chmodule.WithUsername(settings.User),
 		chmodule.WithPassword(settings.Password),
