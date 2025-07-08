@@ -8,13 +8,13 @@ import (
 
 // Clickhouse is the configuration for connecting to a clickhouse database.
 type Settings struct {
-	Host     string `yaml:"CLICKHOUSE_HOST"`
-	Port     int    `yaml:"CLICKHOUSE_TCP_PORT"`
-	User     string `yaml:"CLICKHOUSE_USER"`
-	Password string `yaml:"CLICKHOUSE_PASSWORD"`
-	Database string `yaml:"CLICKHOUSE_DATABASE"`
+	Host     string `env:"CLICKHOUSE_HOST"     yaml:"CLICKHOUSE_HOST"`
+	Port     int    `env:"CLICKHOUSE_TCP_PORT" yaml:"CLICKHOUSE_TCP_PORT"`
+	User     string `env:"CLICKHOUSE_USER"     yaml:"CLICKHOUSE_USER"`
+	Password string `env:"CLICKHOUSE_PASSWORD" yaml:"CLICKHOUSE_PASSWORD"`
+	Database string `env:"CLICKHOUSE_DATABASE" yaml:"CLICKHOUSE_DATABASE"`
 
-	RootCAs *x509.CertPool `yaml:"-"`
+	RootCAs *x509.CertPool `env:"-" yaml:"-"`
 }
 
 // DSN returns the Data Source Name (DSN) for connecting to ClickHouse.
