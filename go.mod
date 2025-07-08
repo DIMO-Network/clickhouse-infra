@@ -1,8 +1,6 @@
 module github.com/DIMO-Network/clickhouse-infra
 
-go 1.22.8
-
-toolchain go1.23.2
+go 1.24
 
 require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.30.0
