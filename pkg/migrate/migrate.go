@@ -1,11 +1,11 @@
-// Package migrate provides the functionality to run goose migrations on a clickhouse database.
+// Package migrate helps with concurrency safe goose migrations for clickhouse.
 package migrate
 
 import (
 	"context"
 	"database/sql"
-	"embed"
 	"fmt"
+	"io/fs"
 	"os"
 	"sync"
 
@@ -18,21 +18,17 @@ var migrationLock sync.Mutex
 
 // setMigrations sets the migrations for the goose tool.
 // this will reset the global migrations and FS to avoid any unwanted migrations registers.
-func setMigrations(registerFuncs []func()) {
-	emptyFs := embed.FS{}
-	goose.SetBaseFS(emptyFs)
+func setMigrations(baseFS fs.FS) {
+	goose.SetBaseFS(baseFS)
 	goose.ResetGlobalMigrations()
-	for _, regFunc := range registerFuncs {
-		regFunc()
-	}
 }
 
 // RunGoose runs the goose command with the provided arguments.
 // args should be the command and the arguments to pass to goose.
 // eg RunGoose(ctx, []string{"up", "-v"}, db).
-// registerFuncs should be a list of functions that register the migrations.
+// baseFS should be the filesystem that holds versioned migration files.
 // This function is safe to run concurrently.
-func RunGoose(ctx context.Context, gooseArgs []string, registerFuncs []func(), db *sql.DB) error {
+func RunGoose(ctx context.Context, gooseArgs []string, baseFS fs.FS, db *sql.DB) error {
 	migrationLock.Lock()
 	defer migrationLock.Unlock()
 	if len(gooseArgs) == 0 {
@@ -43,7 +39,7 @@ func RunGoose(ctx context.Context, gooseArgs []string, registerFuncs []func(), d
 	if len(gooseArgs) > 1 {
 		args = gooseArgs[1:]
 	}
-	setMigrations(registerFuncs)
+	setMigrations(baseFS)
 	if err := goose.SetDialect("clickhouse"); err != nil {
 		return fmt.Errorf("failed to set dialect: %w", err)
 	}
@@ -54,8 +50,8 @@ func RunGoose(ctx context.Context, gooseArgs []string, registerFuncs []func(), d
 	return nil
 }
 
-// RunGooseCmd parses cmdline arguments and runs the goose command using the provided registerFuncs.
-func RunGooseCmd(ctx context.Context, registerFuncs []func()) error {
+// RunGooseCmd parses cmdline arguments and runs the goose command using the provided baseFS.
+func RunGooseCmd(ctx context.Context, baseFS fs.FS) error {
 	args := os.Args
 
 	if len(args) < 2 {
@@ -69,7 +65,7 @@ func RunGooseCmd(ctx context.Context, registerFuncs []func()) error {
 	}
 	sqlDB := clickhouse.OpenDB(dbOptions)
 
-	err = RunGoose(ctx, args[2:], registerFuncs, sqlDB)
+	err = RunGoose(ctx, args[2:], baseFS, sqlDB)
 	if err != nil {
 		_ = sqlDB.Close()
 		return fmt.Errorf("failed to run goose command: %w", err)

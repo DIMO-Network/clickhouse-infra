@@ -25,17 +25,11 @@ help:
 	@echo ""
 
 
-build: ## Build the migration binary
-	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(ARCH) \
-		go build -o $(PATHINSTBIN)/$(BIN_NAME) ./cmd/$(BIN_NAME)
-
-
 all: clean target
 
 clean: ## Clean the project binaries
 	@rm -rf $(PATHINSTBIN)
 	
-
 tidy:  ## tidy the go modules
 	@go mod tidy
 
@@ -44,9 +38,6 @@ test: ## Run the all tests
 
 lint: ## Run the linter
 	@golangci-lint run --timeout 5m
-
-format: ## Run the linter with fix
-	@golangci-lint run --fix
 
 tools-golangci-lint: ## Install golangci-lint
 	@mkdir -p $(PATHINSTBIN)
